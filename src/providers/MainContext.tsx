@@ -1,3 +1,4 @@
+'use client';
 import React, {createContext, useEffect, useMemo} from 'react';
 
 import {
@@ -7,7 +8,7 @@ import {
 } from '@/types/mainContext.type';
 import {getUserInfo} from '@/services/user';
 import {logout} from '@/services/auth';
-import {useRouter} from 'next/router';
+import {useRouter} from 'next/navigation';
 
 export const Context = createContext<IContextReturnType>(
   {} as IContextReturnType
