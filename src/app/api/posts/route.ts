@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const locale = searchParams.get('locale');
+  searchParams;
   try {
-    console.log('GET request come to /posts');
     const posts = await prisma.post.findMany({
       where: {
         published: true,

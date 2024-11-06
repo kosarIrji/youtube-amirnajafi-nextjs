@@ -1,9 +1,11 @@
 import {getPosts} from '@/services/posts';
 import {HeartIcon, ShareIcon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import {getDictionary} from './dictionaries';
 
 export default async function Page({params: {lang}}: any) {
   const posts = await getPosts(lang);
+  const dict = await getDictionary(lang);
   return (
     <div className="container">
       <ul

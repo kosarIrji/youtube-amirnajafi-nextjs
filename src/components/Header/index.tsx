@@ -9,7 +9,8 @@ import {
 } from '@heroicons/react/24/outline';
 import {Context} from '@/providers/MainContext';
 import Link from 'next/link';
-import {useRouter} from 'next/navigation';
+import {useDictionary} from '@/providers/DictionaryProvider';
+import {usePathname, useRouter} from 'next/navigation';
 // import {useTranslation} from 'next-i18next';
 
 function classNames(...classes: any) {
@@ -18,24 +19,29 @@ function classNames(...classes: any) {
 
 export default function Header({params}: {params: any}) {
   const {isLoggedIn, handleLogout} = React.useContext(Context);
+  const lang = useDictionary();
   const router = useRouter();
-  // const {t} = useTranslation();
-  const t = (t: any) => t;
+  const pathname = usePathname();
 
   const navigation = [
-    {name: t('dashboard'), href: '#', current: true},
-    {name: t('team'), href: '#', current: false},
-    {name: t('projects'), href: '#', current: false},
-    {name: t('calendar'), href: '#', current: false},
+    {name: lang.dashboard, href: '#', current: true},
+    {name: lang.team, href: '#', current: false},
+    {name: lang.projects, href: '#', current: false},
+    {name: lang.calendar, href: '#', current: false},
   ];
 
   const handleChangeLanguage = () => {
-    // const newLocale = locale === 'en' ? 'fa' : 'en';
-    // const html: HTMLElement | null = document.getElementById('html');
-    // if (html) {
-    //   html.setAttribute('dir', newLocale === 'en' ? 'ltr' : 'rtl');
-    // }
-    // router.push(router.asPath, router.asPath, {locale: newLocale});
+    const newLocale = params.lang === 'en' ? 'fa' : 'en';
+    const html: HTMLElement | null = document.getElementById('html');
+    if (html) {
+      html.setAttribute('dir', newLocale === 'en' ? 'ltr' : 'rtl');
+      html.setAttribute('lang', newLocale);
+    }
+    console.log(newLocale);
+    router.push(
+      pathname ? pathname.replace(`/${params.lang}`, `/${newLocale}`) : '/'
+    );
+    router.refresh();
   };
   return (
     <Disclosure as="nav" className="bg-gray-800">
