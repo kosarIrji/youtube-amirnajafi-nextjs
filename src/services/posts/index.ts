@@ -1,8 +1,25 @@
 import {api} from '../api';
-const getPosts = (locale: string) => {
-  return api.get(`/posts?locale=${locale}`);
+const getPosts = async (locale: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}posts?locale=${locale}`,
+    {
+      next: {
+        tags: ['posts'],
+      },
+    }
+  );
+  return await response.json();
 };
-const getPost = (id: number, locale: string) =>
-  api.get(`/posts/${id}?locale=${locale}`);
+const getPost = async (id: number, locale: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}posts/${id}?locale=${locale}`,
+    {
+      next: {
+        tags: ['posts'],
+      },
+    }
+  );
+  return await response.json();
+};
 const addPost = (data: any) => api.post('/posts', data);
 export {getPosts, getPost, addPost};

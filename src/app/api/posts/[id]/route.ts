@@ -1,6 +1,5 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
+export const revalidate = 4;
 import {PrismaClient} from '@prisma/client';
-import {getUserID} from '@/helper/authentication';
 import {NextRequest} from 'next/server';
 const prisma = new PrismaClient();
 

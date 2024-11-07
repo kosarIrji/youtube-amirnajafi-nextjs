@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation';
 import {useContext, useState} from 'react';
 import {toast} from 'react-toastify';
 
-export default function Page({params: {lang}}) {
+export default function Page({params: {lang} = {}}: any) {
   const {updateUserInfo} = useContext(Context);
   const router = useRouter();
   const [form, setForm] = useState({

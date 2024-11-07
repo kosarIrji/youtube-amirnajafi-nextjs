@@ -3,18 +3,18 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import jwt from 'jsonwebtoken';
 import {decodeToken} from '@/helper/authentication';
 import {cookies} from 'next/headers';
+import {RequestCookie} from 'next/dist/compiled/@edge-runtime/cookies';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
   try {
     // get token from cookie
-    let token = cookies().get('token');
-    if (!token && !token.value)
-      return new Response('Authorization required', {status: 401});
-    token = token.value;
+    let token = cookies().get('token') as RequestCookie;
+    if (!token) return new Response('Authorization required', {status: 401});
+    const newtoken = token.value;
 
-    const decodedToken = await decodeToken(token);
+    const decodedToken = await decodeToken(newtoken);
     if (!decodedToken)
       return new Response('Authorization required', {status: 401});
 

@@ -11,7 +11,7 @@ const MainLayout = (props: IMainLayoutProps) => {
 
   return (
     <div className="flex flex-col flex-1 h-[100vh]">
-      <Header />
+      <Header params={{}} />
       <main className="flex-col flex-1">{children}</main>
       <Footer />
     </div>

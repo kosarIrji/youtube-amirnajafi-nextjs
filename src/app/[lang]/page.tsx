@@ -1,3 +1,5 @@
+export const revalidate = 10;
+
 import {getPosts} from '@/services/posts';
 import {HeartIcon, ShareIcon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
@@ -5,14 +7,13 @@ import {getDictionary} from './dictionaries';
 
 export default async function Page({params: {lang}}: any) {
   const posts = await getPosts(lang);
-  const dict = await getDictionary(lang);
   return (
     <div className="container">
       <ul
         role="list"
         className="divide-y divide-gray-300 w-full max-w-lg mx-auto"
       >
-        {posts.data.map((post: any) => {
+        {posts.map((post: any) => {
           return (
             <li
               key={`${post.id}`}
@@ -35,7 +36,7 @@ export default async function Page({params: {lang}}: any) {
               </div>
               {/* body */}
               <div>
-                <Link href={`/${lang}/posts/${post.id}`} locale={lang}>
+                <Link prefetch href={`/${lang}/posts/${post.id}`} locale={lang}>
                   <p className="text-gray-500 text-sm">{post.content}</p>
                 </Link>
               </div>

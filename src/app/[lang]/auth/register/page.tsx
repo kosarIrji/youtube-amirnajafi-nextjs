@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
 
-export default function Page({params: {lang}}) {
+export default function Page({params: {lang} = {}}: any) {
   const router = useRouter();
   const [form, setForm] = useState({
     email: '',

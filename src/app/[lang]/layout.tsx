@@ -24,6 +24,8 @@ export default async function RootLayout({
   params: any;
 }) {
   const dictionary = await getDictionary(params.lang);
+  const dict = await getDictionary(params.lang);
+
   return (
     <html
       dir={params.lang === 'en' ? 'ltr' : 'rtl'}

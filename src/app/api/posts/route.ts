@@ -2,12 +2,13 @@ import type {NextApiRequest, NextApiResponse} from 'next';
 import {PrismaClient} from '@prisma/client';
 import {getUserID} from '@/helper/authentication';
 import {NextRequest} from 'next/server';
+import {cookies} from 'next/headers';
 const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const locale = searchParams.get('locale');
-  searchParams;
+  console.log('GET request come to /posts', locale);
   try {
     const posts = await prisma.post.findMany({
       where: {
@@ -35,9 +36,10 @@ export async function GET(req: NextRequest) {
   return Response.json({});
 }
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const {title, content, published} = req.body;
-  const userId = await getUserID(req.cookies.token);
+export async function POST(req: NextRequest) {
+  const {title, content, published} = await req.json();
+  const token = (cookies().get('token') as unknown as string) || '';
+  const userId = await getUserID(token);
   const post = await prisma.post.create({
     data: {
       title,
@@ -50,24 +52,25 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   return Response.json(post);
 }
 
-export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
+export async function DELETE(req: NextRequest) {
   let data = await prisma.post.delete({
     where: {
-      id: req.body.id,
+      id: (await req.json()).id,
     },
   });
   return Response.json(data);
 }
 
-export async function PUT(req: NextApiRequest, res: NextApiResponse) {
+export async function PUT(req: NextRequest) {
+  const body = await req.json();
   let data = await prisma.post.update({
     where: {
-      id: req.body.id,
+      id: body.id,
     },
     data: {
-      title: req.body.title,
-      content: req.body.content,
-      published: req.body.published,
+      title: body.title,
+      content: body.content,
+      published: body.published,
     },
   });
   return Response.json(data);

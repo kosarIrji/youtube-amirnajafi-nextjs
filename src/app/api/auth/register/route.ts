@@ -1,7 +1,6 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
 import {PrismaClient} from '@prisma/client';
-import {NextResponse} from 'next/server';
 import bcrypt from 'bcrypt';
+import {NextRequest} from 'next/server';
 
 const prisma = new PrismaClient();
 
@@ -12,9 +11,9 @@ interface IRegisterBody {
   phone?: string;
 }
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
   try {
-    const data: IRegisterBody = req.body;
+    const data: IRegisterBody = await req.json();
     if (!data.email || !data.password || !data.name) {
       return new Response('please fill all the fields', {status: 400});
     }

@@ -1,18 +1,28 @@
-import {NextApiRequest, NextApiResponse} from 'next';
+import {revalidatePath, revalidateTag} from 'next/cache';
+import {headers} from 'next/headers';
+import {NextRequest} from 'next/server';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.headers.secret !== process.env.MY_SECRET_TOKEN) {
-    return res.status(401).json({message: 'Invalid token'});
-  }
-
+export async function GET(req: NextRequest) {
+  // if (headers().get('secret') !== process.env.MY_SECRET_TOKEN) {
+  //   return new Response('Invalid token', {
+  //     status: 401,
+  //   });
+  // }
   try {
-    const path = req.query.path as string;
-    res.revalidate(path);
-    return res.json({revalidated: true});
+    const searchParams = req.nextUrl.searchParams;
+    const path = searchParams.get('path') as string;
+    const tag = searchParams.get('tag') as string;
+    // res.revalidate(path);
+    if (path) {
+      revalidatePath(path);
+      console.log('revalidate path', path);
+    }
+    if (tag) {
+      revalidateTag(tag);
+      console.log('revalidate tag ', tag);
+    }
+    return Response.json({revalidated: true});
   } catch (err) {
-    return res.status(500).send('Error revalidating');
+    return new Response('Error revalidating', {status: 500});
   }
 }

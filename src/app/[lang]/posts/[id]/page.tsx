@@ -1,4 +1,4 @@
-import {getPost} from '@/services/posts';
+import {getPost, getPosts} from '@/services/posts';
 import {HeartIcon, ShareIcon} from '@heroicons/react/24/outline';
 import Head from 'next/head';
 
@@ -10,8 +10,7 @@ interface IPostParams {
 }
 export default async function Page({params}: IPostParams) {
   const {id, lang} = params;
-  const post_data = await getPost(Number(id), lang);
-  const post = post_data.data;
+  const post = await getPost(Number(id), lang);
 
   return (
     <>
@@ -73,4 +72,12 @@ export default async function Page({params}: IPostParams) {
       </div>
     </>
   );
+}
+export async function generateStaticParams() {
+  const posts = await getPosts('en');
+  const allPostsIds = posts.map((post: any) => ({
+    id: `${post.id}`,
+  }));
+  console.log('allPostsIds', allPostsIds);
+  return allPostsIds;
 }
