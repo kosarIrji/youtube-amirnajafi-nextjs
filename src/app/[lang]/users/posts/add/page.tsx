@@ -1,8 +1,10 @@
 'use client';
 
+import {AddPostServer} from '@/app/actions/addPostServerAction';
 import {addPost} from '@/services/posts';
 import {useRouter} from 'next/navigation';
 import {useState} from 'react';
+import {useFormState, useFormStatus} from 'react-dom';
 import {toast} from 'react-toastify';
 
 interface IParams {
@@ -10,7 +12,16 @@ interface IParams {
     lang: string;
   };
 }
+
+const initialResponse = {
+  data: {},
+  errors: {},
+  message: '',
+};
+
 const AddPosts = (params: IParams) => {
+  const [state, formAction] = useFormState(AddPostServer, initialResponse);
+  console.log('server response', state);
   const router = useRouter();
   const [form, setForm] = useState({
     title: '',
@@ -44,7 +55,7 @@ const AddPosts = (params: IParams) => {
               Add Your first Post
             </h2>
           </div>
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" action={formAction} method="POST">
             <div className="relative -space-y-px rounded-md shadow-sm">
               <div className="pointer-events-none  absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300" />
               <div>
@@ -60,6 +71,11 @@ const AddPosts = (params: IParams) => {
                   placeholder="Your post Title"
                   onChange={handleFormChange}
                 />
+                {state.errors.title && (
+                  <div className="text-red-500 text-sm">
+                    {state.errors.title}
+                  </div>
+                )}
               </div>
               <div>
                 <label htmlFor="content" className="sr-only">
@@ -96,18 +112,23 @@ const AddPosts = (params: IParams) => {
             </div>
 
             <div>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Add Post
-              </button>
+              <SubmitButton />
             </div>
           </form>
         </div>
       </div>
     </>
+  );
+};
+const SubmitButton = () => {
+  const {pending} = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    >
+      {pending ? 'loading ... ' : 'Add Post'}
+    </button>
   );
 };
 export default AddPosts;
